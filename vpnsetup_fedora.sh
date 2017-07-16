@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #
 # Script for automatic setup of an IPsec VPN server on CentOS/RHEL 6 and 7.
 # Works on any dedicated server or virtual private server (VPS) except OpenVZ.
@@ -37,7 +37,7 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 SYS_DT="$(date +%Y-%m-%d-%H:%M:%S)"; export SYS_DT
 
 exiterr()  { echo "Error: $1" >&2; exit 1; }
-exiterr2() { echo "Error: 'yum install' failed." >&2; exit 1; }
+exiterr2() { echo "Error: 'dnf install' failed." >&2; exit 1; }
 conf_bk() { /bin/cp -f "$1" "$1.old-$SYS_DT" 2>/dev/null; }
 bigecho() { echo; echo "## $1"; echo; }
 
@@ -128,8 +128,8 @@ cd /opt/src || exiterr "Cannot enter /opt/src."
 
 bigecho "Installing packages required for setup..."
 
-yum -y install wget bind-utils openssl || exiterr2
-yum -y install iproute gawk grep sed net-tools || exiterr2
+dnf -y install wget bind-utils openssl || exiterr2
+dnf -y install iproute gawk grep sed net-tools || exiterr2
 
 bigecho "Trying to auto discover IP of this server..."
 
@@ -148,29 +148,29 @@ PUBLIC_IP=${VPN_PUBLIC_IP:-''}
 check_ip "$PUBLIC_IP" || PUBLIC_IP=$(wget -t 3 -T 15 -qO- http://ipv4.icanhazip.com)
 check_ip "$PUBLIC_IP" || exiterr "Cannot find valid public IP. Edit the script and manually enter it."
 
-bigecho "Adding the EPEL repository..."
+# bigecho "Adding the EPEL repository..."
 
-yum -y install epel-release || exiterr2
+# dnf -y install epel-release || exiterr2
 
 bigecho "Installing packages required for the VPN..."
 
-yum -y install nss-devel nspr-devel pkgconfig pam-devel \
+dnf -y install nss-devel nspr-devel pkgconfig pam-devel \
   libcap-ng-devel libselinux-devel \
   curl-devel flex bison gcc make \
   fipscheck-devel unbound-devel xmlto || exiterr2
-yum -y install ppp xl2tpd || exiterr2
+dnf -y install ppp xl2tpd || exiterr2
 
 if grep -qs "release 6" /etc/redhat-release; then
-  yum -y remove libevent-devel
-  yum -y install libevent2-devel || exiterr2
+  dnf -y remove libevent-devel
+  dnf -y install libevent2-devel || exiterr2
 else
-  yum -y install libevent-devel systemd-devel || exiterr2
-  yum -y install iptables-services || exiterr2
+  dnf -y install libevent-devel systemd-devel || exiterr2
+  dnf -y install iptables-services || exiterr2
 fi
 
 bigecho "Installing Fail2Ban to protect SSH..."
 
-yum -y install fail2ban || exiterr2
+dnf -y install fail2ban || exiterr2
 
 bigecho "Compiling and installing Libreswan..."
 
