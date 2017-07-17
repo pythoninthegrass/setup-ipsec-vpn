@@ -46,9 +46,9 @@ check_ip() {
   printf %s "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
-if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
-  exiterr "This script only supports CentOS/RHEL 6 and 7."
-fi
+# if ! grep -qs -e "release 6" -e "release 7" /etc/redhat-release; then
+#   exiterr "This script only supports CentOS/RHEL 6 and 7."
+# fi
 
 if [ -f /proc/user_beancounters ]; then
   echo "Error: This script does not support OpenVZ VPS." >&2
