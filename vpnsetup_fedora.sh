@@ -159,6 +159,7 @@ dnf -y install nss-devel nspr-devel pkgconfig pam-devel \
   curl-devel flex bison gcc make \
   fipscheck-devel unbound-devel xmlto || exiterr2
 dnf -y install ppp xl2tpd || exiterr2
+dnf -y install tar || exiterr2
 
 if grep -qs "release 6" /etc/redhat-release; then
   dnf -y remove libevent-devel
